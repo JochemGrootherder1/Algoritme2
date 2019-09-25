@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <map>
 #include "Job.h"
 
 class JobShop
@@ -23,7 +24,10 @@ public:
 private:
 	unsigned short amountOfJobs;
 	unsigned short amountOfMachines;
+	unsigned long currentTime;
 	std::vector<Job> jobList;
+	std::map<unsigned long, unsigned short> times;
+	std::map<unsigned short, bool> machines;
 };
 
 #endif /* JOBSHOP_H_ */

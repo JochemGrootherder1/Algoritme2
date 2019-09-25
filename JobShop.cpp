@@ -9,11 +9,17 @@
 
 JobShop::JobShop(std::vector<std::vector<unsigned short>> aJobShop,
 		unsigned short anAmountOfJobs, unsigned short anAmountOfMachines) :
-		amountOfJobs(anAmountOfJobs), amountOfMachines(anAmountOfMachines)
+		amountOfJobs(anAmountOfJobs), amountOfMachines(anAmountOfMachines), currentTime(
+				0)
 {
 	for (unsigned short i = 0; i < anAmountOfJobs; ++i)
 	{
 		jobList.push_back(Job(i, aJobShop[i], amountOfMachines));
+	}
+
+	for (unsigned short i = 0; i < amountOfMachines; ++i)
+	{
+		machines.insert(std::make_pair(i, 0));
 	}
 
 }
@@ -25,23 +31,40 @@ JobShop::~JobShop()
 
 void JobShop::run()
 {
-	std::sort(jobList.begin(), jobList.end(), [](Job& lhs, Job& rhs)
+	while (!done())
 	{
-		if(lhs.getCurrentSlack() == rhs.getCurrentSlack())
+		std::sort(jobList.begin(), jobList.end(), [](Job& lhs, Job& rhs)
+		{
+			if(lhs.getCurrentSlack() == rhs.getCurrentSlack())
 			{
 				return lhs.getId() < rhs.getId();
 			}
-		return lhs.getCurrentSlack() > rhs.getCurrentSlack();
+			return lhs.getCurrentSlack() > rhs.getCurrentSlack();
+		});
+
+		for (unsigned short i = 0; i < amountOfJobs; ++i)
+		{
+			if (!jobList[i].isBusy())
+			{
+				if (machines[jobList[i].getMachineId()] == false)
+				{
+					machines[jobList[i].getMachineId()] = true;
+					times.insert(std::make_pair(currentTime + jobList[i].getJobDuration(), jobList[i].getMachineId()));
+					jobList[i].setBusy(true);
+				}
+			}
+		}
+		if (currentTime == getLowestTime())
+		{
+			jobList[times[currentTime]].setBusy(false);
+		}
+	}
+
+	std::sort(jobList.begin(), jobList.end(), [](const Job& lhs, const Job& rhs)
+	{
+		return lhs.getId() < rhs.getId();
 	});
 
-	if (done())
-	{
-		std::sort(jobList.begin(), jobList.end(),
-				[](const Job& lhs, const Job& rhs)
-				{
-					return lhs.getId() < rhs.getId();
-				});
-	}
 	for (unsigned short i = 0; i < amountOfMachines; ++i)
 	{
 		std::cout << jobList[i].getId() << " " << jobList[i].getStartTime()
