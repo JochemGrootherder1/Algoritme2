@@ -1,0 +1,12 @@
+
+.cproject
+
+.settings/
+
+*.prefs
+
+Debug/Algoritme2.exe
+
+*.o
+
+Debug/
