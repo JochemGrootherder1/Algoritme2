@@ -41,7 +41,7 @@ unsigned short Job::getJobDuration()
 void Job::calculateTotalDuration()
 {
 	unsigned long totalDuration = 0;
-	for (unsigned short i = 0; i < amountOfMachines; ++i)
+	for (unsigned short i = currentTask; i < amountOfMachines; ++i)
 	{
 		totalDuration += taskList[i].getDuration();
 	}
