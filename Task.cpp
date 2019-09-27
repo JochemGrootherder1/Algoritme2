@@ -6,13 +6,13 @@
  */
 
 #include "Task.h"
+#include <iostream>
 
 Task::Task(unsigned short anId, unsigned short aMachineId,
 		unsigned short aDuration) :
 		id(anId), machineId(aMachineId), duration(aDuration), done(0)
 {
 	// TODO Auto-generated constructor stub
-
 }
 
 Task::Task(const Task& aTask) :
@@ -47,7 +47,7 @@ bool Task::isDone() const
 	return done;
 }
 
-void Task::setDone(bool done)
+void Task::setDone()
 {
-	this->done = done;
+	done = true;
 }

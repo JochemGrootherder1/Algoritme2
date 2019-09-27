@@ -20,6 +20,7 @@ public:
 	virtual ~JobShop();
 	void run();
 	bool done();
+	unsigned long getLowestTime();
 
 private:
 	unsigned short amountOfJobs;
@@ -28,6 +29,7 @@ private:
 	std::vector<Job> jobList;
 	std::map<unsigned long, unsigned short> times;
 	std::map<unsigned short, bool> machines;
+	std::map<unsigned short, bool> jobsDone;
 };
 
 #endif /* JOBSHOP_H_ */

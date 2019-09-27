@@ -6,21 +6,34 @@
  */
 
 #include "Job.h"
+#include <iostream>
 
 Job::Job(unsigned short anId, std::vector<unsigned short> aJobList,
 		unsigned short anAmountOfMachines) :
-		id(anId), amountOfMachines(anAmountOfMachines), done(0), busy(0), currentTask(0), startTime(
-				0), endTime(0)
+		id(anId), amountOfMachines(anAmountOfMachines), amountOfTasks(
+				anAmountOfMachines), done(0), busy(0), currentTask(0), startTimeSet(
+				0), startTime(0), endTime(0), taskEndTime(0)
 {
-	for (unsigned short i = 0; i < anAmountOfMachines; ++i)
+	for (unsigned short i = 0; i < amountOfTasks * 2; ++i)
 	{
 		unsigned short machineId = aJobList[i];
-		unsigned short id = i;
+		unsigned short id = i/2;
 		++i;
 		unsigned short duration = aJobList[i];
 		taskList.push_back(Task(id, machineId, duration));
 	}
 	calculateTotalDuration();
+}
+
+Job::Job(const Job& aJob) :
+		id(aJob.getId()), amountOfMachines(aJob.getAmountOfMachines()), amountOfTasks(
+				aJob.getAmountOfTasks()), taskList(aJob.getTaskList()), currentSlack(
+				aJob.getCurrentSlack()), done(aJob.isDone()), busy(
+				aJob.isBusy()), currentTask(aJob.getCurrentTask()), startTimeSet(
+				aJob.isStartTimeSet()), startTime(aJob.getStartTime()), endTime(
+				aJob.getEndTime()), taskEndTime(aJob.getTaskEndTime())
+{
+//	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 Job::~Job()
@@ -41,11 +54,12 @@ unsigned short Job::getJobDuration()
 void Job::calculateTotalDuration()
 {
 	unsigned long totalDuration = 0;
-	for (unsigned short i = currentTask; i < amountOfMachines; ++i)
+	for (unsigned short i = currentTask; i < amountOfTasks; ++i)
 	{
 		totalDuration += taskList[i].getDuration();
 	}
 	currentSlack = totalDuration;
+//	std::cout << "totalDuration " << totalDuration << "job id " << id <<std::endl;
 }
 
 unsigned short Job::getId() const
@@ -53,9 +67,8 @@ unsigned short Job::getId() const
 	return id;
 }
 
-unsigned long Job::getCurrentSlack()
+unsigned long Job::getCurrentSlack() const
 {
-	calculateTotalDuration();
 	return currentSlack;
 }
 
@@ -66,7 +79,11 @@ unsigned long Job::getEndTime() const
 
 void Job::setEndTime(unsigned long endTime)
 {
-	this->endTime = endTime;
+	if (this->endTime == 0)
+	{
+		this->endTime = endTime;
+	}
+	done = true;
 }
 
 unsigned long Job::getStartTime() const
@@ -76,12 +93,29 @@ unsigned long Job::getStartTime() const
 
 void Job::setStartTime(unsigned long startTime)
 {
-	this->startTime = startTime;
+	if (!startTimeSet)
+	{
+		startTimeSet = true;
+		this->startTime = startTime;
+	}
+}
+
+void Job::setDone(bool done)
+{
+	this->done = done;
 }
 
 bool Job::isDone() const
 {
-	return done;
+	for (unsigned short i = 0; i < amountOfMachines; ++i)
+	{
+		if (!taskList[i].isDone())
+		{
+			return false;
+		}
+	}
+//	std::cout << "done" << id << std::endl;
+	return true;
 }
 
 bool Job::isBusy() const
@@ -92,13 +126,20 @@ bool Job::isBusy() const
 void Job::setBusy(bool busy)
 {
 	this->busy = busy;
-	if(!busy)
+	if (!busy)
 	{
-		if(currentTask < amountOfMachines - 1)
+		taskList[currentTask].setDone();
+
+		if (currentTask < amountOfTasks - 1)
 		{
 			++currentTask;
 		}
 	}
+}
+
+unsigned short Job::getAmountOfMachines() const
+{
+	return amountOfMachines;
 }
 
 unsigned short Job::getCurrentTask() const
@@ -106,12 +147,27 @@ unsigned short Job::getCurrentTask() const
 	return currentTask;
 }
 
-void Job::setCurrentTask(unsigned short currentTask)
+bool Job::isStartTimeSet() const
 {
-	this->currentTask = currentTask;
+	return startTimeSet;
 }
 
 const std::vector<Task>& Job::getTaskList() const
 {
 	return taskList;
+}
+
+unsigned short Job::getAmountOfTasks() const
+{
+	return amountOfTasks;
+}
+
+unsigned long Job::getTaskEndTime() const
+{
+			return taskEndTime;
+}
+
+void Job::setTaskEndTime(unsigned long taskEndTime)
+{
+	this->taskEndTime = taskEndTime;
 }

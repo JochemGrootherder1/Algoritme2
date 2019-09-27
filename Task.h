@@ -19,7 +19,7 @@ public:
 	unsigned short getDuration() const;
 	unsigned short getMachineId() const;
 	bool isDone() const;
-	void setDone(bool done);
+	void setDone();
 
 private:
 	unsigned short id;

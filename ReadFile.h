@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include "JobShop.h"
 
 class ReadFile
 {
