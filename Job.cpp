@@ -12,7 +12,7 @@ Job::Job(unsigned short anId, std::vector<unsigned short> aJobList,
 		unsigned short anAmountOfMachines) :
 		id(anId), amountOfMachines(anAmountOfMachines), amountOfTasks(
 				anAmountOfMachines), done(0), busy(0), currentTask(0), startTimeSet(
-				0), startTime(0), endTime(0), taskEndTime(0)
+				0), startTime(0), endTime(0)
 {
 	for (unsigned short i = 0; i < amountOfTasks * 2; ++i)
 	{
@@ -31,7 +31,7 @@ Job::Job(const Job& aJob) :
 				aJob.getCurrentSlack()), done(aJob.isDone()), busy(
 				aJob.isBusy()), currentTask(aJob.getCurrentTask()), startTimeSet(
 				aJob.isStartTimeSet()), startTime(aJob.getStartTime()), endTime(
-				aJob.getEndTime()), taskEndTime(aJob.getTaskEndTime())
+				aJob.getEndTime())
 {
 //	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
@@ -162,12 +162,3 @@ unsigned short Job::getAmountOfTasks() const
 	return amountOfTasks;
 }
 
-unsigned long Job::getTaskEndTime() const
-{
-			return taskEndTime;
-}
-
-void Job::setTaskEndTime(unsigned long taskEndTime)
-{
-	this->taskEndTime = taskEndTime;
-}

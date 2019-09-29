@@ -40,8 +40,6 @@ public:
 	bool isStartTimeSet() const;
 	const std::vector<Task>& getTaskList() const;
 	unsigned short getAmountOfTasks() const;
-	unsigned long getTaskEndTime() const;
-	void setTaskEndTime(unsigned long taskEndTime);
 
 private:
 
@@ -57,7 +55,6 @@ private:
 	bool startTimeSet;
 	unsigned long startTime;
 	unsigned long endTime;
-	unsigned long taskEndTime;
 };
 
 #endif /* JOB_H_ */

@@ -63,8 +63,6 @@ void JobShop::run()
 						times.insert(std::make_pair(currentTime + jobList[i].getJobDuration(), jobList[i].getId()));
 						jobList[i].setBusy(true);
 						jobList[i].setStartTime(currentTime);
-						jobList[i].setTaskEndTime(
-								currentTime + jobList[i].getJobDuration());
 					}
 				}
 			}
@@ -88,6 +86,7 @@ void JobShop::run()
 			//Verwijderen van tijden uit times
 			for (auto time : times)
 			{
+				std::cout << time.first << std::endl;
 				if (time.first == currentTime)
 				{
 					timesToRemove.push_back(time.first);
